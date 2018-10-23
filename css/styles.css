@@ -1,0 +1,129 @@
+:root {
+  --jumbotron-padding-y: 3rem;
+}
+
+.jumbotron {
+  padding-top: var(--jumbotron-padding-y);
+  padding-bottom: var(--jumbotron-padding-y);
+  margin-bottom: 0;
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: calc(var(--jumbotron-padding-y) * 2);
+    padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron-heading {
+  font-weight: 300;
+}
+
+.jumbotron .container {
+  max-width: 40rem;
+}
+
+footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+footer p {
+  margin-bottom: 0.25rem;
+}
+
+.flex-equal > * {
+  -ms-flex: 1;
+  flex: 1;
+}
+@media (min-width: 768px) {
+  .flex-md-equal > * {
+    -ms-flex: 1;
+    flex: 1;
+  }
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.home-link {
+  color: inherit;
+}
+
+.home-link:hover {
+  color: inherit;
+}
+
+.about-image {
+  background: url('/images/london1.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 50vh;
+}
+
+.image {
+  overflow: hidden;
+  max-height: 80vh;
+  background-position: center;
+  background-size: contain;
+  background-size: cover;
+}
+
+.img-row {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+  padding: 0 0px;
+  justify-content: center;
+}
+
+/* Create four equal columns that sits next to each other */
+.img-col {
+  -ms-flex: 50%; /* IE10 */
+  flex: 50%;
+  max-width: 50%;
+  padding: 0 0px;
+}
+
+.img-col img {
+  margin-top: 0px;
+  vertical-align: middle;
+}
+
+.img-col-full {
+  flex: 100%;
+  max-width: 100%;
+  padding: 0 0px;
+}
+
+.img-col-full img {
+  max-height: 70vh;
+  margin-top: 0px;
+  vertical-align: middle;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 800px) {
+  .img-col {
+    -ms-flex: 50%;
+    flex: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .img-col {
+    -ms-flex: 100%;
+    flex: 100%;
+    max-width: 100%;
+  }
+}

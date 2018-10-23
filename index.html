@@ -1,1 +1,148 @@
-<h1>Hey!</h1>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/fa.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <title>Home - Andreas Ioannidis</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container d-flex justify-content-between">
+                <a href="/" class="navbar-brand d-flex align-items-center">
+                    <i class="fas fa-university"></i>&nbsp;&nbsp;
+                    Home
+                </a>
+                <button id="loginBtn" class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Login</button>
+            </div>
+        </nav>
+    </header>
+
+
+
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Andreas Ioannidis</h1>
+            <p class="lead text-muted">Hey! Hola! Howdy! A-Hoy! Welcome to my site, I dont know what im supposed to put
+                on here, it's mostly a testing site for things I make. Hopefully you find it useful as well :)</p>
+            <p>
+                <!-- <a id="primaryBtn" href="#" class="btn btn-primary my-2">About Me</a> -->
+                <a id="primaryBtn" href="#contact" class="btn btn-outline-secondary my-2">Contact Me</a>
+            </p>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="d-md-flex flex-md-equal w-100 pl-md-3">
+
+            <div class="bg-dark mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center text-white overflow-hidden">
+                <a class="home-link" href="/about">
+                    <div class="my-3 py-3">
+                        <h2 class="display-5 ">About Me</h2>
+                        <p class="lead ">But. Who. Am. I?...</p>
+                    </div>
+                </a>
+            </div>
+            <div class="bg-light mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center overflow-hidden">
+                <a class="home-link" href="http://smartcom.motorolasolutions.com/17-may-2018-students-from-swinburne-university-wins-motorola-solutions-2018-public-safety-hackathon/">
+                    <div class="my-3 py-3">
+                        <h2 class="display-5">Hackathon</h2>
+                        <p class="lead">I also won a Hackathon :D</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3 pb-5">
+            <div class="bg-light mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center overflow-hidden">
+                <a class="home-link" href="#">
+                    <div class="my-3 py-3">
+                        <h2 class="display-5">Tutorials</h2>
+                        <p class="lead">Javascript | C# | Python | Small Basic | Java | C++</p>
+                    </div>
+                </a>
+            </div>
+            <div class="bg-dark mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center text-white overflow-hidden">
+                <a class="home-link" href="#">
+                    <div class="my-3 py-3">
+                        <h2 class="display-5">Articles</h2>
+                        <p class="lead">Lets get deep about code and stuff</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-light ">
+        <div id="contact" class="container py-5 pt-md-5">
+            <div class="row justify-content-center">
+                <div class="col col-md-6">
+                    <h1 class="jumbotron-heading">Contact</h1>
+                    <form id="contactForm" action="https://formspree.io/andreas@andreasioan.com" method="POST">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input id="name" required type="text" maxlength="50" class="form-control" name="name"
+                                placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input id="email" required type="email" class="form-control" name="email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" required maxlength="1000" class="form-control" name="message"
+                                placeholder="Message" rows="5"></textarea>
+                        </div>
+                        <button type="submit" id="submitContactFormBtn" class="btn btn-outline-primary">Submit <i id="btnStatus"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <footer class="text-muted">
+        <div class="container">
+            <p class="float-right">
+                <!-- <a href="#">Back to top</a> -->
+            </p>
+            <p>
+                <a href="https://github.com/andreasioan"><i class="fab fa-github fa-lg"></i></a>
+                <a href="https://www.linkedin.com/in/andreas-ioannidis/"><i class="fab fa-linkedin fa-lg"></i></a>
+            </p>
+
+            <div class="d-flex justify-content-between">
+
+            </div>
+            <p class="d-inline-block">&copy; Andreas Ioannidis 2018 - Don't try, do. </p>
+            <p class="d-inline-block float-sm-right"><a class="home-link" href="/#contact">Contact Me</a></p>
+        </div>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById("loginBtn").addEventListener("click", function () {
+            alert("try and hack me. c'mon, do it");
+        });
+    </script>
+</body>
+
+</html>
