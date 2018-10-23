@@ -60,7 +60,7 @@ footer p {
 }
 
 .about-image {
-  background: url('/images/london1.jpg');
+  background: url('../images/london1.jpg');
   background-size: cover;
   background-position: center;
   height: 50vh;
