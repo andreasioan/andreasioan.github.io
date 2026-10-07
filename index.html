@@ -1,148 +1,232 @@
 <!doctype html>
-<html lang="en">
-
+<html lang="en" translate="no">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Andreas Ioannidis</title>
+<meta name="description" content="Andreas Ioannidis. Principal software engineer.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-.5 -.5 4 4'%3E%3Cpath fill='%23ff4d00' d='M1 0h1v1H1zM2 1h1v1H2zM0 2h3v1H0z'/%3E%3C/svg%3E">
+<style>
+  :root { --bg: #0b0b0b; --ink: #ebe8e1; --dim: #77756f; --c: 4px; }
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/fa.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+  html, body { height: 100%; margin: 0; overflow: hidden; }
 
-    <title>Home - Andreas Ioannidis</title>
+  body {
+    background: var(--bg) radial-gradient(circle, #1c1c1c .7px, transparent 1px) 0 0 / var(--c) var(--c);
+    color: var(--dim);
+    font: 12px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+  h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+  nav { position: fixed; display: flex; gap: 3em; }
+  a { color: inherit; text-decoration: none; padding: 8px 0; }
+  a:hover, a:focus-visible { color: var(--ink); outline: none; }
+
+  small { position: fixed; right: 20px; bottom: 20px; font-size: 10px; color: #3a3936; }
+</style>
 </head>
-
 <body>
-    <header>
-        <nav class="navbar navbar-dark bg-dark shadow-sm">
-            <div class="container d-flex justify-content-between">
-                <a href="/" class="navbar-brand d-flex align-items-center">
-                    <i class="fas fa-university"></i>&nbsp;&nbsp;
-                    Home
-                </a>
-                <button id="loginBtn" class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Login</button>
-            </div>
-        </nav>
-    </header>
+<h1>Andreas Ioannidis</h1>
+<canvas aria-hidden="true"></canvas>
+<nav>
+  <a href="https://github.com/andreasioan">GitHub ↗</a>
+  <a href="https://www.linkedin.com/in/andreas-ioannidis/">LinkedIn ↗</a>
+</nav>
+<small aria-hidden="true">B3/S23</small>
+<script>
+  // Conway's Game of Life, with one extra rule: every cell remembers what it
+  // is supposed to be. Disturb a cell and it runs Life for a while, then cools
+  // and snaps back. Chaos in, name out.
 
+  const GLYPHS = {
+    A: ['.###.', '#...#', '#...#', '#####', '#...#', '#...#', '#...#'],
+    N: ['#...#', '#...#', '##..#', '#.#.#', '#..##', '#...#', '#...#'],
+    D: ['####.', '#...#', '#...#', '#...#', '#...#', '#...#', '####.'],
+    R: ['####.', '#...#', '#...#', '####.', '#.#..', '#..#.', '#...#'],
+    E: ['#####', '#....', '#....', '####.', '#....', '#....', '#####'],
+    S: ['.####', '#....', '#....', '.###.', '....#', '....#', '####.'],
+    I: ['###', '.#.', '.#.', '.#.', '.#.', '.#.', '###'],
+    O: ['.###.', '#...#', '#...#', '#...#', '#...#', '#...#', '.###.'],
+    ' ': ['...', '...', '...', '...', '...', '...', '...'],
+  };
+  const COLORS = ['#ebe8e1', '#c42200', '#ff4d00', '#ff9d2e']; // settled, then hot: cooling → fresh
+  const TICK = 1000 / 30;
 
+  const canvas = document.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  const nav = document.querySelector('nav');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  let W, H, c, cols, rows, cur, nxt, tgt, heat;
+  let running = false, last = 0, acc = 0, prev = null;
 
-    <section class="jumbotron text-center">
-        <div class="container">
-            <h1 class="jumbotron-heading">Andreas Ioannidis</h1>
-            <p class="lead text-muted">Hey! Hola! Howdy! A-Hoy! Welcome to my site, I dont know what im supposed to put
-                on here, it's mostly a testing site for things I make. Hopefully you find it useful as well :)</p>
-            <p>
-                <!-- <a id="primaryBtn" href="#" class="btn btn-primary my-2">About Me</a> -->
-                <a id="primaryBtn" href="#contact" class="btn btn-outline-secondary my-2">Contact Me</a>
-            </p>
-        </div>
-    </section>
+  const widthOf = line => [...line].reduce((w, ch) => w + GLYPHS[ch][0].length + 1, -1);
+  const brush = () => Math.max(3, Math.round(32 / c));
 
-    <section class="container">
-        <div class="d-md-flex flex-md-equal w-100 pl-md-3">
+  function layout(intro) {
+    W = innerWidth;
+    H = innerHeight;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-            <div class="bg-dark mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center text-white overflow-hidden">
-                <a class="home-link" href="/about">
-                    <div class="my-3 py-3">
-                        <h2 class="display-5 ">About Me</h2>
-                        <p class="lead ">But. Who. Am. I?...</p>
-                    </div>
-                </a>
-            </div>
-            <div class="bg-light mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center overflow-hidden">
-                <a class="home-link" href="http://smartcom.motorolasolutions.com/17-may-2018-students-from-swinburne-university-wins-motorola-solutions-2018-public-safety-hackathon/">
-                    <div class="my-3 py-3">
-                        <h2 class="display-5">Hackathon</h2>
-                        <p class="lead">I also won a Hackathon :D</p>
-                    </div>
-                </a>
-            </div>
-        </div>
+    // One line when there's room, two when there isn't. Then pick the biggest
+    // pixel scale (k cells per font pixel) that still leaves cells >= 4px.
+    const lines = W / H > 1.1 ? ['ANDREAS IOANNIDIS'] : ['ANDREAS', 'IOANNIDIS'];
+    const wF = Math.max(...lines.map(widthOf));
+    const hF = lines.length * 10 - 3;
+    let k = 4;
+    for (; k > 1; k--) if (Math.min(.86 * W / wF, .45 * H / hF) / k >= 4) break;
+    c = Math.max(3, Math.floor(Math.min(.86 * W / wF, .45 * H / hF) / k));
+    document.body.style.setProperty('--c', c + 'px');
 
-        <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3 pb-5">
-            <div class="bg-light mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center overflow-hidden">
-                <a class="home-link" href="#">
-                    <div class="my-3 py-3">
-                        <h2 class="display-5">Tutorials</h2>
-                        <p class="lead">Javascript | C# | Python | Small Basic | Java | C++</p>
-                    </div>
-                </a>
-            </div>
-            <div class="bg-dark mr-md-3 py-3 px-3 pt-md-5 px-md-5 pb-md-5 text-center text-white overflow-hidden">
-                <a class="home-link" href="#">
-                    <div class="my-3 py-3">
-                        <h2 class="display-5">Articles</h2>
-                        <p class="lead">Lets get deep about code and stuff</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
+    // The grid has a one-cell dead border so neighbour lookups never go out of bounds.
+    cols = Math.ceil(W / c) + 2;
+    rows = Math.ceil(H / c) + 2;
+    cur = new Uint8Array(cols * rows);
+    nxt = new Uint8Array(cols * rows);
+    tgt = new Uint8Array(cols * rows);
+    heat = new Uint8Array(cols * rows);
 
-    <section class="bg-light ">
-        <div id="contact" class="container py-5 pt-md-5">
-            <div class="row justify-content-center">
-                <div class="col col-md-6">
-                    <h1 class="jumbotron-heading">Contact</h1>
-                    <form id="contactForm" action="https://formspree.io/andreas@andreasioan.com" method="POST">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input id="name" required type="text" maxlength="50" class="form-control" name="name"
-                                placeholder="Name">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input id="email" required type="email" class="form-control" name="email" placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" required maxlength="1000" class="form-control" name="message"
-                                placeholder="Message" rows="5"></textarea>
-                        </div>
-                        <button type="submit" id="submitContactFormBtn" class="btn btn-outline-primary">Submit <i id="btnStatus"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+    const x0 = Math.floor((cols - wF * k) / 2);
+    const y0 = Math.floor((rows - hF * k) / 2.15);
+    lines.forEach((line, li) => {
+      let x = x0;
+      for (const ch of line) {
+        GLYPHS[ch].forEach((row, gy) => [...row].forEach((p, gx) => {
+          if (p !== '#') return;
+          for (let dy = 0; dy < k; dy++) for (let dx = 0; dx < k; dx++)
+            tgt[(y0 + (li * 10 + gy) * k + dy) * cols + x + gx * k + dx] = 1;
+        }));
+        x += (GLYPHS[ch][0].length + 1) * k;
+      }
+    });
 
+    nav.style.left = (x0 - 1) * c + 'px';
+    nav.style.top = (y0 - 1 + hF * k) * c + Math.max(24, 3 * k * c) + 'px';
 
+    // Boot from noise. Cells near the centre cool first, so the name
+    // crystallises out of the middle while the edges are still burning.
+    const cx = cols / 2, cy = rows / 2, far = Math.hypot(cx, cy);
+    for (let i = 0; i < cur.length; i++) {
+      const x = i % cols, y = i / cols | 0;
+      if (!intro || still || !x || !y || x === cols - 1 || y === rows - 1) { cur[i] = tgt[i]; continue; }
+      cur[i] = Math.random() < .25 ? 1 : 0;
+      heat[i] = 10 + 75 * Math.hypot(x - cx, y - cy) / far + Math.random() * 35;
+    }
+    draw();
+    if (intro && !still) wake();
+  }
 
+  function step() {
+    let hot = 0;
+    for (let y = 1; y < rows - 1; y++) {
+      for (let x = 1, i = y * cols + 1; x < cols - 1; x++, i++) {
+        if (!heat[i]) { nxt[i] = tgt[i]; continue; }
+        const n = cur[i - cols - 1] + cur[i - cols] + cur[i - cols + 1]
+                + cur[i - 1] + cur[i + 1]
+                + cur[i + cols - 1] + cur[i + cols] + cur[i + cols + 1];
+        nxt[i] = n === 3 || (n === 2 && cur[i]) ? 1 : 0;
+        heat[i]--;
+        hot++;
+      }
+    }
+    [cur, nxt] = [nxt, cur];
+    return hot;
+  }
 
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const s = c - 1;
+    const paths = COLORS.map(() => new Path2D());
+    for (let y = 1; y < rows - 1; y++) {
+      for (let x = 1, i = y * cols + 1; x < cols - 1; x++, i++) {
+        if (!cur[i]) continue;
+        const h = heat[i];
+        paths[h === 0 ? 0 : h < 18 ? 1 : h < 45 ? 2 : 3].rect((x - 1) * c, (y - 1) * c, s, s);
+      }
+    }
+    paths.forEach((p, j) => { ctx.fillStyle = COLORS[j]; ctx.fill(p); });
+  }
 
-    <footer class="text-muted">
-        <div class="container">
-            <p class="float-right">
-                <!-- <a href="#">Back to top</a> -->
-            </p>
-            <p>
-                <a href="https://github.com/andreasioan"><i class="fab fa-github fa-lg"></i></a>
-                <a href="https://www.linkedin.com/in/andreas-ioannidis/"><i class="fab fa-linkedin fa-lg"></i></a>
-            </p>
+  function frame(t) {
+    acc += Math.min(t - (last || t), 100);
+    last = t;
+    let hot = 1;
+    while (acc >= TICK) { hot = step(); acc -= TICK; }
+    draw();
+    if (hot) requestAnimationFrame(frame);
+    else running = false;
+  }
 
-            <div class="d-flex justify-content-between">
+  function wake() {
+    if (running) return;
+    running = true;
+    last = 0;
+    acc = TICK;
+    requestAnimationFrame(frame);
+  }
 
-            </div>
-            <p class="d-inline-block">&copy; Andreas Ioannidis 2018 - Don't try, do. </p>
-            <p class="d-inline-block float-sm-right"><a class="home-link" href="/#contact">Contact Me</a></p>
-        </div>
-    </footer>
+  function disturb(px, py, r, density) {
+    const gx = px / c + 1, gy = py / c + 1;
+    for (let y = Math.max(1, Math.floor(gy - r)); y <= Math.min(rows - 2, gy + r); y++) {
+      for (let x = Math.max(1, Math.floor(gx - r)); x <= Math.min(cols - 2, gx + r); x++) {
+        const d = Math.hypot(x - gx, y - gy) / r;
+        if (d > 1) continue;
+        const i = y * cols + x;
+        heat[i] = Math.max(heat[i], 30 + Math.random() * 70 * (1 - d));
+        if (Math.random() < density * (1 - d)) cur[i] = 1;
+      }
+    }
+    wake();
+  }
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.3.1.slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+  addEventListener('pointermove', e => {
+    const p = { x: e.clientX, y: e.clientY };
+    if (prev) {
+      const r = brush();
+      const n = Math.ceil(Math.hypot(p.x - prev.x, p.y - prev.y) / (r * c / 2)) || 1;
+      for (let j = 1; j <= n; j++)
+        disturb(prev.x + (p.x - prev.x) * j / n, prev.y + (p.y - prev.y) * j / n, r, .3);
+    }
+    prev = p;
+  });
+  addEventListener('pointerdown', e => {
+    prev = { x: e.clientX, y: e.clientY };
+    if (!e.target.closest('a')) disturb(prev.x, prev.y, brush() * 2.5, .35);
+  });
+  addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') prev = null; });
+  document.documentElement.addEventListener('pointerleave', () => { prev = null; });
 
-    <script>
-        document.getElementById("loginBtn").addEventListener("click", function () {
-            alert("try and hack me. c'mon, do it");
-        });
-    </script>
+  let resizeTimer;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => layout(false), 150);
+  });
+
+  // Every so often a stray bit flips somewhere in the name. It heals.
+  if (!still) (function cosmicRay() {
+    setTimeout(() => {
+      if (!document.hidden) {
+        let i;
+        do i = Math.random() * tgt.length | 0; while (!tgt[i]);
+        disturb((i % cols - 1) * c, ((i / cols | 0) - 1) * c, brush() * .8, .15);
+      }
+      cosmicRay();
+    }, 3000 + Math.random() * 6000);
+  })();
+
+  layout(true);
+</script>
 </body>
-
 </html>
